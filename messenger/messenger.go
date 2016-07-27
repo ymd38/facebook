@@ -75,17 +75,24 @@ type ImageMessage struct {
 	} `json:"message"`
 }
 
+// GenericTemplate Element...
+type Element struct {
+	Title    string `json:"title"`
+	ItemUrl  string `json:"item_url,omitempty"`
+	ImageUrl string `json:"image_url,omitempty"`
+	Subtilte string `json:"subtitle,omitempty"`
+}
+
 // GenericTemplate ...
 type GenericTemplate struct {
 	Recipient Recipient `json:"recipient"`
 	Message   struct {
 		Attachment struct {
-			Type     string `json:"type"`
-			Elements struct {
-				Title    string `json:"title"`
-				ItemUrl  string `json:"item_url,omitempty"`
-				ImageUrl string `json:"image_url,omitempty"`
-			} `json:"elements"`
+			Type    string `json:"type"`
+			Payload struct {
+				TemplateType string    `json:"template_type"`
+				Elements     []Element `json:"elements"`
+			} `json:"payload"`
 		} `json:"attachment"`
 	} `json:"message"`
 }
@@ -116,6 +123,19 @@ func NewImageMessage(senderid string, image_url string) *ImageMessage {
 	log.Println(i)
 
 	return i
+}
+
+// NewGenericTemplate ...
+func NewGenericTemplate(senderid string, elements []Element) *GenericTemplate {
+	g := &GenericTemplate{}
+	g.Recipient.ID = senderid
+	g.Message.Attachment.Type = "template"
+	g.Message.Attachment.Payload.TemplateType = "generic"
+	g.Message.Attachment.Payload.Elements = elements
+
+	log.Println(g)
+
+	return g
 }
 
 func (fb *FacebookMessenger) SendMessage(m interface{}) error {
