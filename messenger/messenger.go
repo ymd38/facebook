@@ -117,7 +117,7 @@ func NewTextMessage(senderid string, text string) *TextMessage {
 func NewImageMessage(senderid string, image_url string) *ImageMessage {
 	i := &ImageMessage{}
 	i.Recipient.ID = senderid
-	i.Message.Attachment.Type = "template"
+	i.Message.Attachment.Type = "image"
 	i.Message.Attachment.Payload.Url = image_url
 
 	log.Println(i)
